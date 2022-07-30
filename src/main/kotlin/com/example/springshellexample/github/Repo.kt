@@ -1,8 +1,8 @@
-package com.example.springshellexample
+package com.example.springshellexample.github
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Repo (
-    var name: String? = null
+    val name: String? = null
 )

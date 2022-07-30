@@ -4,7 +4,7 @@ Kotlin Spring Shell Native Project
 ### **Work in Progress**
 Example project to play around with spring shell with native capabilities.
 
-`get-user --userName {userName}`
+`get-github-user-details --userName {userName}`
 
 Example Response
 ```
@@ -22,7 +22,7 @@ User(
 )
 ```
 
-`get-repos --userName {userName}`
+`get-github-user-repos --userName {userName}`
 
 Example Response
 ```
@@ -37,4 +37,20 @@ Example Response
   todo-rest, 
   Words
 ]
+```
+
+`get-bitrise-user-details`
+
+Important : make sure to add your bitrise authorization token to the applcation.properties file
+
+Example Response
+```
+User(
+  userName=ghostsonyx, 
+  slug=de8a207def21dc0c,
+  email=test1234@gmail.com,
+  avatarUrl=null, 
+  created=2022-07-30T16:51:21.52506Z,
+  id=123456
+)
 ```

@@ -1,6 +1,8 @@
-package com.example.springshellexample
+package com.example.springshellexample.github
 
+import com.example.springshellexample.webClient
 import lombok.extern.slf4j.Slf4j
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
@@ -10,7 +12,7 @@ import java.util.stream.Collectors
 @Service
 @Slf4j
 class GithubService {
-    fun getUser(userName: String): User? {
+    fun getGithubUserDetails(userName: String): User? {
         var user = webClient()
                 .get()
                 .uri("https://api.github.com/users/$userName")
@@ -23,15 +25,16 @@ class GithubService {
         return user?.body
     }
 
-    fun getRepos(userName: String): MutableList<String?>? {
+    fun getGithubUserRepos(userName: String): MutableList<String?>? {
         var fluxRepos = WebClient.create()
                 .get()
-                .uri("https://api.github.com/users/$userName /repos")
+                .uri("https://api.github.com/users/$userName/repos")
                 .retrieve()
-                .bodyToFlux(Repo::class.java)
+                .onStatus(HttpStatus::is4xxClientError) { Mono.error(RuntimeException("4XX Error ${it.statusCode()}")) }
+                .onStatus(HttpStatus::is5xxServerError) { Mono.error(RuntimeException("5XX Error ${it.statusCode()}")) }
+                .toEntity(object : ParameterizedTypeReference<List<Repo?>?>() {})
+                .block()
 
-
-        return fluxRepos.collectList().block()
-                ?.stream()?.map { repo: Repo -> repo.name }?.collect(Collectors.toList())
+        return fluxRepos?.body?.stream()?.map { repo: Repo? -> repo?.name }?.collect(Collectors.toList())
     }
 }
